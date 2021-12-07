@@ -132,6 +132,77 @@ func UpdateInfo(c *gin.Context) {
 //	}
 //}
 
+func NewShare(c *gin.Context){//每次产生一个share时应该生成一个moreshare
+	//
+	//
+	//
+	//
+	var share model.Share
+	err:=c.ShouldBind(&share)
+	if err!=nil{
+		fmt.Println(err);return
+	}
+	DB := database.Link()
+	fmt.Println(share)
+	err = DB.Create(&share).Error
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	var shareSrc []model.ShareImg
+	err =c.ShouldBind(&shareSrc)//存地址
+
+	var moreShare model.MoreShare
+	err =c.ShouldBind(&moreShare)
+
+	if err!=nil{
+		fmt.Println(err);return
+	}
+	//......
+
+
+}
+
+func ViewShareText(c *gin.Context){//传share的文字
+	id := c.Query("shareid")
+	var share model.Share
+	DB := database.Link()
+	res := DB.Where("id = ?", id).Take(&share)
+	if res.Error!=nil{fmt.Println(res.Error);return}
+
+
+}
+func ViewShareSrc (c *gin.Context){//传share的图片
+	id := c.Query("shareid")
+	var src []model.ShareImg
+	DB := database.Link()
+	DB.Find(&src).Where("shareid= ?",id)
+	c.AsciiJSON(200,gin.H{
+		"src":src,
+	})
+}
+
+
+func MoreShare (c *gin.Context){//首页刷新给的share
+	var cat []model.MoreShare
+	DB := database.Link()
+	DB.Find(&cat).Limit(10).Offset(10)
+	//fmt.Println(cat)
+	c.AsciiJSON(200,gin.H{
+		"cats":cat,
+	})
+}
+func Search(c *gin.Context){//搜索
+	keywords:=c.Query("keywords")
+	DB:=database.Link()
+	var cat []model.MoreShare
+	DB.Where("title LIKE ?","%"+keywords+"%").Find(&cat).Limit(10).Offset(10)
+	c.AsciiJSON(200,gin.H{
+		"cats":cat,
+	})
+}
+
 func UpdateTip(c *gin.Context){
 
 }

@@ -22,10 +22,15 @@ type Share struct { //分享
 	gorm.Model        //这个id用来标记每个图片的位置
 	UserID     uint    `form:"uid" json:"uid" binding:"required" ` //User.ID
 	Address    string `form:"address" json:"address" binding:"required" gorm:"default:'null'"` //存地址
-	Title      string `form:"title" json:"title" binding:"required" gorm:"not null"`
+	Title      string `form:"title" json:"title" binding:"required" gorm:"size:30"`//标题长度不超过30
 	Content    string `form:"content" json:"content" binding:"" gorm:"type:longtext"` //附加内容
-	//Star uint
+	Star int
 }
+
+type DisplayShareText struct {
+
+}
+
 
 type Tips struct { //贴士
 	gorm.Model        //这个id用来标记每个图片的位置
@@ -36,7 +41,7 @@ type Tips struct { //贴士
 
 type ShareImg struct { //存share图片地址
 	gorm.Model
-	ShareID uint    //查图片的时候根据where("ShareID=?")来查
+	ShareID uint   `json:"shareid"` //查图片的时候根据where("ShareID=?")来查
 	Src     string `form:"src" json:"src" binding:"required" gorm:"type:longtext"` //图片地址
 }
 
@@ -44,4 +49,14 @@ type TipImg struct { //存tip图片地址
 	gorm.Model
 	TipID uint    //查图片的时候根据where("TipID=?")来查
 	Src   string `form:"src" json:"src" binding:"required" gorm:"type:longtext"` //图片地址
+}
+
+
+
+type MoreShare struct {
+	Username string	`json:"username" gorm:"size:80"`
+	Iocnsrc string	`json:"iconsrc" gorm:"unique"`
+	Sharesrc string	`json:"sharesrc" gorm:"unique"`
+	Title string	`json:"title" gorm:"size:30"`		//每个share的title
+	ShareID uint	`json:"shareid" gorm:"unique"`		//每个share的id，用户点击进入一个share，前端应该返回一个shareid
 }
