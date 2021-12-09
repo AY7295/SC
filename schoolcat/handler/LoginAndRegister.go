@@ -33,12 +33,13 @@ func AdminExist(email string) bool {
 }
 
 func Login(c *gin.Context) { //登录
-	var user model.User
+	var user,user0 model.User
 	err := c.ShouldBind(&user)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	//fmt.Println(user.Password, user.Email)
 	if !EmailExist(user.Email) || !PasswordRight(user.Password, user.Email) {
 		c.AsciiJSON(400, gin.H{
 			"msg": "用户名或者密码有误",
@@ -50,8 +51,14 @@ func Login(c *gin.Context) { //登录
 		})
 		return
 	}
+	DB := database.Link()
+	res := DB.Where("email = ?", user.Email).Take(&user0)
+	if res.Error != nil {
+		log.Println(res.Error)
+	}
 	c.AsciiJSON(200, gin.H{
 		"msg": "欢迎使用",
+		"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
 	})
 
 	//fmt.Println(EmailExist(user.Email), PasswordRight(user.Password, user.Email))
@@ -82,7 +89,7 @@ func Register(c *gin.Context) { //注册
 	}
 }
 
-func AddInfo(c *gin.Context) {
+func Info(c *gin.Context) {
 	var user0, user model.User
 	err := c.ShouldBind(&user0)
 	if err != nil {
@@ -90,38 +97,15 @@ func AddInfo(c *gin.Context) {
 		return
 	}
 	DB := database.Link()
-	res := DB.Where("email = ?", user0.Email).Take(&user)
+	res := DB.Where("ID = ?", user0.ID).Take(&user)
 	if res.Error != nil {
 		log.Println(res.Error)
 		return
 	}
-	user.Username = user0.Username
-	user.Gender = user0.Gender
-	user.School = user0.School
-	DB.Save(&user)
+	user0.Email=user.Email
+	user0.Password=user.Password
+	DB.Save(&user0)
 	c.AsciiJSON(200, gin.H{
-		"msg": "添加成功",
-	})
-}
-func UpdateInfo(c *gin.Context) {
-	var user model.User
-	err := c.ShouldBind(&user)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	DB := database.Link()
-	//res := DB.Where("email = ?", user0.Email).Take(&user)
-	//if res.Error != nil {
-	//	log.Println(res.Error)
-	//	return
-	//}
-	//if user0.Username!=user.Username && user0.Username!=""{user.Username = user0.Username}
-	//if user0.Gender!=user.Gender && user0.Gender!=""{user.Gender = user0.Gender}
-	//if user0.School!=user.School && user0.School!=""{user.School = user0.School}
-	//fmt.Println(user0.Username,user0.Gender,user0.School,"	",user.Username,user.Gender,user.School)
-	DB.Save(&user)
-	c.AsciiJSON(200, gin.H{
-		"msg": "更改成功",
+		"msg": "操作成功",
 	})
 }

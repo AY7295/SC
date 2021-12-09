@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func NewShare(c *gin.Context){//每次产生一个share时应该生成一个moreshare
+func NewShare(c *gin.Context){
 	var share model.Share
 	err:=c.ShouldBind(&share)
 	if err != nil {
@@ -19,9 +19,16 @@ func NewShare(c *gin.Context){//每次产生一个share时应该生成一个more
 	err = DB.Create(&share).Error
 	if err != nil {
 		log.Println(err)
-		return
 	}
-
+	c.AsciiJSON(200,gin.H{
+		"msg":"分享成功",
+		"ShareID":share.ID,
+	})
+}
+func NewComment (c *gin.Context){
+	var comment model.UserComment
+	err :=c.ShouldBind(&comment)
+	if err!=nil{fmt.Println(err);return}
 }
 
 func ViewShare(c *gin.Context){
@@ -38,3 +45,4 @@ func ViewShare(c *gin.Context){
 		"share":share,
 	})
 }
+
