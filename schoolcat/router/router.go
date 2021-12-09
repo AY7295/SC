@@ -23,17 +23,16 @@ func Router() *gin.Engine  {
 	user.PUT("/info",handler.UpdateInfo)//传过来信息和添加一样
 
 
+	//user.GET("/share",handler.MoreShare)//刷新请求新的share
 
-	user.GET("/share",handler.MoreShare)//刷新请求新的share
-	user.POST("share",handler.NewShare)//用户添加share
+
+	user.POST("newShare",handler.NewShare)//用户添加share
 	user.POST("/")
 
+	user.GET("/viewShare",handler.ViewShare)
+	//user.GET("/viewShareSrc",handler.ViewShareSrc)
 
-	//分2次请求，一次文字，一次图片
-	user.GET("/viewShareText",handler.ViewShareText)
-	user.GET("/viewShareText",handler.ViewShareSrc)
-
-	user.GET("/search",handler.Search)//用户搜索
+	//user.GET("/search",handler.Search)//用户搜索
 
 
 	return engine

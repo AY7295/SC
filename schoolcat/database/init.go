@@ -36,7 +36,7 @@ func Link() *gorm.DB {
 		log.Panic(err.Error())
 	}
 	//根据model创建一个表
-	err = DB.AutoMigrate(&model.User{},&model.MoreShare{},&model.Admin{})
+	err = DB.AutoMigrate(&model.User{},&model.Admin{},&model.Share{},&model.ShareImage{})
 
 	if err != nil {
 		log.Panic(err.Error())
