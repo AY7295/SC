@@ -32,7 +32,7 @@ func URL() {
 		HandleError(err)
 	}
 
-	// 签名直传。
+	// 签名直传。1
 	signedURL, err := bucket.SignURL(objectName, oss.HTTPPut, 60)
 	if err != nil {
 		HandleError(err)

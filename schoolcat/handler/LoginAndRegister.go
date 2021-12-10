@@ -59,6 +59,9 @@ func Login(c *gin.Context) { //登录
 	c.AsciiJSON(200, gin.H{
 		"msg": "欢迎使用",
 		"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
+
+		"username":user0.Username,
+		"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
 	})
 
 	//fmt.Println(EmailExist(user.Email), PasswordRight(user.Password, user.Email))

@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+
 type User struct {
 	gorm.Model        // 这个id用来标记每个人的share
 	Email      string `json:"email,omitempty"  gorm:"size:50;unique"` //email可以是任何形式的string，但长度不能超过50
