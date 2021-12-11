@@ -34,9 +34,9 @@ func DeleteShare (c *gin.Context){
 			"msg":"user_id错误",
 		})
 	}
-	commentid := c.GetHeader("share_id")
+	shareid := c.GetHeader("share_id")
 	DB := database.Link()
-	res := DB.Where("id = ?",commentid).Take(&share)
+	res := DB.Where("id = ?",shareid).Take(&share)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if share.UserID !=uint(uid) {
 		c.AsciiJSON(400,gin.H{
@@ -53,7 +53,6 @@ func DeleteShare (c *gin.Context){
 func NewShareComment (c *gin.Context){
 	var comment model.UserComment
 	err :=c.ShouldBind(&comment)
-
 	if err!=nil{fmt.Println(err);return}
 	DB:=database.Link()
 	err = DB.Create(&comment).Error
@@ -62,6 +61,7 @@ func NewShareComment (c *gin.Context){
 	}
 	c.AsciiJSON(200,gin.H{
 		"msg":"评论成功",
+		"user_comment":comment.ID,
 	})
 }
 func DeleteShareComment (c *gin.Context){
@@ -130,7 +130,8 @@ func ViewShare (c *gin.Context){
 func SelfShare (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
-	id := c.GetHeader("UID")
+	id := c.GetHeader("user_id")
+	fmt.Println(id)
 	res :=DB.Where("user_id = ?",id).Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {

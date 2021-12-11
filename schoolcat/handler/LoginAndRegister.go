@@ -65,7 +65,6 @@ func Login(c *gin.Context) { //登录
 	c.AsciiJSON(200, gin.H{
 		"msg": "欢迎使用",
 		"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
-
 		"username":user0.Username,
 		"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
 	})
@@ -79,6 +78,7 @@ func Register(c *gin.Context) { //注册
 	if err != nil {
 		log.Panic(err)
 	}
+	fmt.Println(user.Email)
 	if EmailExist(user.Email) {
 		c.AsciiJSON(400, gin.H{
 			"msg": "邮箱已被注册",
@@ -103,6 +103,7 @@ func Register(c *gin.Context) { //注册
 		}
 		c.AsciiJSON(200, gin.H{
 			"msg": "注册成功",
+			"user_id":user.ID,
 		})
 	}
 }

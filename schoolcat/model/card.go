@@ -19,15 +19,15 @@ type CatCard struct {
 }
 type CatCardSrc struct {
 	gorm.Model
-	CardID uint   `json:"card_id"`
+	CatCardID uint   `json:"cat_card_id"`
 	Src     string `form:"src" json:"src" binding:"required" gorm:"type:longtext"` //图片地址
 }
 type CatCardComment struct {
 	gorm.Model
-	Username string	`json:"username" gorm:"size:80"`
-	Iocnsrc string	`json:"iconsrc" `
-	UserID     uint    `json:"UID" binding:"required" ` //User.ID
-	CardID uint   `json:"card_id"`
-	CommentStar uint	`json:"commentStar"`
-	Comment string `json:"comment"`
+	Username    string `json:"username" gorm:"size:80"`
+	Iocnsrc     string `json:"iconsrc" `
+	UserID      uint   `json:"user_id" binding:"required" ` //User.ID
+	CatCardID      uint   `json:"cat_card_id"`
+	CommentStar uint   `json:"commentStar"`
+	Comment     string `json:"comment"`
 }
