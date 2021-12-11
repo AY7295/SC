@@ -88,17 +88,31 @@ func Search (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
 	keywords :=c.Query("keywords")
+	uid := c.GetHeader("user_id")
 	res :=DB.Where("content LIKE ?","%"+keywords+"%").Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
 		var shareimg []model.ShareImage
 		var comment []model.UserComment
+		var shareLike model.ShareLike
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].ShareImages = shareimg
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		for k:=0;k<len(comment);k++{
+			var commentLike model.ShareCommentLike
+			res =DB.Where("user_comment_id = ? AND user_id = ?", comment[i].ID, uid).Take(&commentLike)
+			if res.Error!=nil{fmt.Println(res.Error);return}
+			comment[i].Like=commentLike.Like
+		}
 		shares[i].UserComment = comment
+
+		res =DB.Where("share_id = ? AND user_id = ?", shares[i].ID, uid).Take(&shareLike)
+		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
 	c.AsciiJSON(200,gin.H{
@@ -109,17 +123,31 @@ func Search (c *gin.Context){
 func ViewShare (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
+	uid := c.GetHeader("user_id")
 	res :=DB.Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
 		var shareimg []model.ShareImage
 		var comment []model.UserComment
+		var shareLike model.ShareLike
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].ShareImages = shareimg
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		for k:=0;k<len(comment);k++{
+			var commentLike model.ShareCommentLike
+			res =DB.Where("user_comment_id = ? AND user_id = ?", comment[i].ID, uid).Take(&commentLike)
+			if res.Error!=nil{fmt.Println(res.Error);return}
+			comment[i].Like=commentLike.Like
+		}
 		shares[i].UserComment = comment
+
+		res =DB.Where("share_id = ? AND user_id = ?", shares[i].ID, uid).Take(&shareLike)
+		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
 	c.AsciiJSON(200,gin.H{
@@ -130,19 +158,32 @@ func ViewShare (c *gin.Context){
 func SelfShare (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
-	id := c.GetHeader("user_id")
-	fmt.Println(id)
-	res :=DB.Where("user_id = ?",id).Find(&shares).Limit(10).Offset(10)
+	uid := c.GetHeader("user_id")
+	//fmt.Println(uid)
+	res :=DB.Where("user_id = ?",uid).Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
 		var shareimg []model.ShareImage
 		var comment []model.UserComment
+		var shareLike model.ShareLike
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].ShareImages = shareimg
+
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		for k:=0;k<len(comment);k++{
+			var commentLike model.ShareCommentLike
+			res =DB.Where("user_comment_id = ? AND user_id = ?", comment[i].ID, uid).Take(&commentLike)
+			if res.Error!=nil{fmt.Println(res.Error);return}
+			comment[i].Like=commentLike.Like
+		}
 		shares[i].UserComment = comment
+
+		res =DB.Where("share_id = ? AND user_id = ?", shares[i].ID, uid).Take(&shareLike)
+		if res.Error!=nil{fmt.Println(res.Error);return}
+		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
 	c.AsciiJSON(200,gin.H{
@@ -150,14 +191,16 @@ func SelfShare (c *gin.Context){
 	})
 }
 
-func CommentLike (c *gin.Context){
+func ShareCommentLike (c *gin.Context){
+	var commentLike model.ShareCommentLike
 	var comment model.UserComment
-	commentid :=c.Query("comment_id")
-	like :=c.Query("like")
+	err :=c.ShouldBind(&commentLike)
+	if err!=nil{log.Println(err);return}
 	DB := database.Link()
-	res := DB.Where("id = ?",commentid).Take(&comment)
+	DB.Create(&commentLike)
+	res := DB.Where("id = ?",commentLike.UserCommentID).Take(&comment)
 	if res.Error!=nil{fmt.Println(res.Error);return}
-	if like == "yes"{
+	if commentLike.Like == "true"{
 		comment.CommentStar+=1
 	}else{
 		comment.CommentStar-=1
@@ -169,19 +212,29 @@ func CommentLike (c *gin.Context){
 }
 
 func ShareLike (c *gin.Context){
+
+	var shareLike,shareLike0 model.ShareLike
 	var share model.Share
-	shareid :=c.Query("share_id")
-	like :=c.Query("like")
+	err :=c.ShouldBind(&shareLike)
+	if err!=nil{log.Println(err);return}
 	DB := database.Link()
-	res := DB.Where("id = ?",shareid).Take(&share)
+	res := DB.Where("id = ?",shareLike.ShareID).Take(&share)
 	if res.Error!=nil{fmt.Println(res.Error);return}
-	if like == "yes"{
+	if shareLike.Like == "true" {
 		share.ShareStar+=1
 	}else{
 		share.ShareStar-=1
 	}
 	DB.Save(&share)
+	res = DB.Where("id = ?",shareLike.ID).Take(&shareLike0)
+	if res.RowsAffected==0{
+		DB.Create(&shareLike)
+	}else {
+		shareLike0.Like = shareLike.Like
+		DB.Save(&shareLike0)
+	}
 	c.AsciiJSON(200,gin.H{
 		"shares": "ok",
 	})
+
 }

@@ -14,6 +14,7 @@ type User struct {
 	School     string `son:"school,omitempty" gorm:"default:'null';size:50"`
 	Resume     string `json:"resume,omitempty"  gorm:"default:'null',type:longtext"`
 	IconSrc    string `json:"icon_src,omitempty" gorm:"default:'null'"` //头像
+	//jwt.StandardClaims
 }
 
 type Admin struct {

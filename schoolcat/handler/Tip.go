@@ -109,3 +109,21 @@ func DeleteTipComment (c *gin.Context) {
 		})
 	}
 }
+
+func TipCommentLike (c *gin.Context){
+	var comment model.TipComment
+	commentid :=c.Query("comment_id")
+	like :=c.Query("like")
+	DB := database.Link()
+	res := DB.Where("id = ?",commentid).Take(&comment)
+	if res.Error!=nil{fmt.Println(res.Error);return}
+	if like == "true"{
+		comment.CommentStar+=1
+	}else{
+		comment.CommentStar-=1
+	}
+	DB.Save(&comment)
+	c.AsciiJSON(200,gin.H{
+		"shares": "ok",
+	})
+}

@@ -20,6 +20,7 @@ func Router() *gin.Engine  {
 	user.POST("/newTipComment",handler.NewTipComment)//用户添加评论
 	user.DELETE("/deleteTipComment",handler.DeleteTipComment)
 	user.GET("newTip",handler.ViewTip)
+	user.PUT("/tipCommentLike",handler.TipCommentLike)//用户点赞
 
 
 	//资料卡片相关
@@ -48,7 +49,7 @@ func Router() *gin.Engine  {
 
 		 user.GET("/search",handler.Search)//用户搜索
 
-		 user.PUT("/commentLike",handler.CommentLike)//用户点赞
+		 user.PUT("/shareCommentLike",handler.ShareCommentLike)//用户点赞
 		 user.PUT("/shareLike",handler.ShareLike)//用户点赞
 
 	return engine
