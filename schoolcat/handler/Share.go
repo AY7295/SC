@@ -28,7 +28,12 @@ func NewShare(c *gin.Context){
 }
 func DeleteShare (c *gin.Context){
 	var share model.Share
-	uid,_ := strconv.Atoi(c.GetHeader("user_id"))
+	uid,err := strconv.Atoi(c.GetHeader("user_id"))
+	if err != nil {
+		c.AsciiJSON(400,gin.H{
+			"msg":"user_id错误",
+		})
+	}
 	commentid := c.GetHeader("share_id")
 	DB := database.Link()
 	res := DB.Where("id = ?",commentid).Take(&share)

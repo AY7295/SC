@@ -5,6 +5,7 @@ import (
 	"SchoolCat/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 )
 
@@ -22,7 +23,8 @@ func PasswordRight(pwd string, email string) bool { //检查密码
 	if res.Error != nil {
 		log.Println(res.Error)
 	}
-	return pwd == user.Password
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pwd))
+	return err == nil
 }
 
 func AdminExist(email string) bool {
@@ -48,6 +50,10 @@ func Login(c *gin.Context) { //登录
 	}else if AdminExist(user.Email){
 		c.AsciiJSON(200, gin.H{
 			"msg": "欢迎使用,admin",
+			"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
+			"auth":"12345",//管理员地任何操作都要在header里面加上这个键值对
+			"username":user0.Username,
+			"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
 		})
 		return
 	}
@@ -79,8 +85,17 @@ func Register(c *gin.Context) { //注册
 		})
 		return
 	} else {
+
+		hash, err1 := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err1 != nil {
+			fmt.Println(err1)
+		}
+		//fmt.Println(hash)
+		encodePW := string(hash)
+		//fmt.Println(encodePW)
+		user.Password = encodePW
 		DB := database.Link()
-		fmt.Println(user)
+		//fmt.Println(user)
 		err = DB.Create(&user).Error
 		if err != nil {
 			log.Println(err)
@@ -110,5 +125,7 @@ func Info(c *gin.Context) {
 	DB.Save(&user0)
 	c.AsciiJSON(200, gin.H{
 		"msg": "操作成功",
+		"username":user0.Username,
+		"iconsrc":user0.IconSrc,//如果用户没上传头像就为空
 	})
 }

@@ -17,7 +17,7 @@ type User struct {
 }
 
 type Admin struct {
-	UserID uint `json:"user_id" binding:"required"`
+	UserID   uint   `json:"user_id" binding:"required"`
 	Email    string `form:"email,omitempty" json:"email,omitempty"  gorm:"size:50;unique"`      //email可以是任何形式的string，但长度不能超过50
 	Password string `form:"pwd,omitempty" json:"pwd,omitempty" binding:"max=16" gorm:"size:16"` //密码最大16位，前端可以设置一下最小6位
 }

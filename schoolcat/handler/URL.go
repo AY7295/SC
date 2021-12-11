@@ -27,15 +27,15 @@ func URL() {
 	localFilename := "D:\\localpath\\examplefile.txt"
 
 	// 获取存储空间。
-	bucket, err := client.Bucket(bucketName)
+	bucket, err1 := client.Bucket(bucketName)
 	if err != nil {
-		HandleError(err)
+		HandleError(err1)
 	}
 
 	// 签名直传。1
-	signedURL, err := bucket.SignURL(objectName, oss.HTTPPut, 60)
+	signedURL, err2 := bucket.SignURL(objectName, oss.HTTPPut, 60)
 	if err != nil {
-		HandleError(err)
+		HandleError(err2)
 	}
 
 	var val = "上云就上阿里云"
