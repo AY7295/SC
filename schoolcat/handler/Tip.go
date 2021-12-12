@@ -34,12 +34,12 @@ func DeleteTip(c *gin.Context){
 	var tip model.Tip
 	tipid := c.GetHeader("tip_id")
 
-	var user model.User
+	var admin model.Admin
 	uid,_ := strconv.Atoi(c.GetHeader("user_id"))//执行删除操作者的id
-	res := DB.Where("id = ?",uid).Take(&user)
+	res := DB.Where("user_id = ?",uid).Take(&admin)
 	if res.Error != nil{fmt.Println(res.Error);return}
 
-	if  AdminExist(user.Email) {
+	if  res.RowsAffected==0 {
 		c.AsciiJSON(400,gin.H{
 			"msg":"无权删除",
 		})
@@ -61,12 +61,12 @@ func ViewTip (c *gin.Context){
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(tips);i++ {
 		var tipimg []model.TipSrc
-		res =DB.Where("card_id=?",tips[i].ID).Find(&tipimg)
+		res =DB.Where("tip_id=?",tips[i].ID).Find(&tipimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		tips[i].TipSrc = tipimg
 
 		var comment []model.TipComment
-		res =DB.Where("card_id=?",tips[i].ID).Find(&comment)
+		res =DB.Where("tip_id=?",tips[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		for k:=0;k<len(comment);k++{
 			var commentLike model.ShareCommentLike
@@ -136,21 +136,3 @@ func TipCommentLike (c *gin.Context){
 		"shares": "ok",
 	})
 }
-
-//var commentLike model.ShareCommentLike
-//var comment model.UserComment
-//err :=c.ShouldBind(&commentLike)
-//if err!=nil{log.Println(err);return}
-//DB := database.Link()
-//DB.Create(&commentLike)
-//res := DB.Where("id = ?",commentLike.UserCommentID).Take(&comment)
-//if res.Error!=nil{fmt.Println(res.Error);return}
-//if commentLike.Like == "true"{
-//comment.CommentStar+=1
-//}else{
-//comment.CommentStar-=1
-//}
-//DB.Save(&comment)
-//c.AsciiJSON(200,gin.H{
-//"shares": "ok",
-//})

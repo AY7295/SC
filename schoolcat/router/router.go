@@ -14,12 +14,12 @@ func Router() *gin.Engine  {
 
 
 	//百科相关
-	admin.POST("/tip",handler.Tip)//add tip
-	admin.DELETE("/tip",handler.DeleteTip)//delete tip
+		admin.POST("/tip",handler.Tip)//add tip
+		admin.DELETE("/tip",handler.DeleteTip)//delete tip
 
 	user.POST("/newTipComment",handler.NewTipComment)//用户添加评论
 	user.DELETE("/deleteTipComment",handler.DeleteTipComment)
-	user.GET("newTip",handler.ViewTip)
+	user.GET("/newTip",handler.ViewTip)
 	user.PUT("/tipCommentLike",handler.TipCommentLike)//用户点赞
 
 

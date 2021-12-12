@@ -50,14 +50,10 @@
 服务端
 
 {
-
   "iconsrc": "null",
-
   "msg": "欢迎使用",
-
   "userid": 2,
-
-  "username": ""
+  "username": "gvhgg"
 
 }
 {
@@ -402,7 +398,130 @@
 
 
 
+管理员添加tip（post）
+
+47.103.210.124:7000/admin/tip
+
+客户端
+
+{
+
+  "create_id":5,
+
+  "delete_id":0,
+
+  "username":"admin",
+
+  "icon_src":"dcbsgdc",
+
+  "model_code":1,
+
+  "title":"1q",
+
+  "content":"2w",
+
+  "tip":[
+
+​    {"src":"ddscsc"},
+
+​    {"src":"csdcdscww"},
+
+​    {"src":"csdvyj"}
+
+  ]
+
+}
+
+服务器
+
+{
+
+  "TipID": 1,
+
+  "msg": "操作成功"
+
+}
 
 
 
 
+
+管理员删除tip(delete)
+
+47.103.210.124:7000/user/tip
+
+客户端（在header里加）
+
+"user_id":5,
+
+"tip_id":6
+
+服务器
+
+{
+
+  "msg": "删除成功"
+
+}
+
+
+
+
+
+用户请求新的tips
+
+47.103.210.124:7000/user/newTip
+
+客户端（在header里加）
+
+"user_id":5
+
+服务器
+
+
+
+
+
+用户添加tip的评论（post）
+
+47.103.210.124:7000/user/newTipComment
+
+客户端
+
+{
+
+  "username":"vsgdvcw",
+
+  "icon_src":"ccsdc",
+
+  "user_id":6,
+
+  "tip_id":4,
+
+  "like":"false",
+
+  "comment_star":0,
+
+  "comment":"gvdcgshd"
+
+}
+
+服务器
+
+{
+
+  "msg": "评论成功",
+
+  "user_comment": 1
+
+}
+
+
+
+用户删除share(delete)
+
+47.103.210.124:7000/user/deleteShare
+
+客户端
+
+服务器
