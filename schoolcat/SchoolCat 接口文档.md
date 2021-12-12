@@ -16,12 +16,15 @@
 }
 
 服务器
+{
+	"msg":"信息不完整",//邮箱或者密码没成功传过来
+}
 
 {
 
   "msg": "注册成功",
 
-  "user_id": 2
+  "user_id":
 
 }
 {
@@ -111,41 +114,26 @@
 
 ```
 客户端
-
 {
-
-  "user_id":2,
-
-  "username":"qwert",
-
-  "icon_src":"",
-
-  "address":"信工楼",
-
-  "content":"heloo there is a cat",
-
-  "share_star":0,
-
-  "share_images":[
-
-​    {"src":"adcsdsd.com"},
-
-​    {"src":"dwfefd.cn"},
-
-​    {"src":"ufhdjdj"}
-
-  ]
-
+    "user_id":5,
+    "username":"1q",
+    "icon_src":"",
+    "address":"",
+    "content":"fsdbjdsjhdsbjhdsbdbjjdb",
+    "share_star":0,
+    "like":"false",
+    "share_images":[
+        {"src":"qwer"},
+        {"src":"qaz"},
+        {"src":"qsc"},
+        {"src":"wesd"},
+        {"src":"21wsaasx"}
+    ]
 }
-
 服务器
-
 {
-
-  "ShareID": 1,
-
-  "msg": "分享成功"
-
+    "ShareID": 1,
+    "msg": "分享成功"
 }
 ```
 
@@ -155,27 +143,20 @@
 
 ```
 客户端(在header里面加)
-
 "user_id":6,
-
 "share_id":5
-
 服务器
-
 {
-
+  "msg":"user_id错误",
+}
+{
   "msg": "无权删除"
-
 }
-
 {
-
   "msg": "删除成功"
-
 }
+
 ```
-
-
 
 用户添加share评论(post)
 
@@ -183,31 +164,19 @@
 
 ```
 客户端
-
 {
-
-  "user_id":3,
-
-  "username":"qwert123",
-
-  "icon_src":"bhsdchjdq.sads",
-
-  "share_id":3,
-
-  "comment_star":0,
-
-  "comment":"cbdsyugysdgvhsdgdvjhwvhb"
-
-  }
-
+    "user_id":2,
+    "username":"123q",
+    "icon_src":"wqds",
+    "share_id":8,
+    "comment":"fsdbjdsjhdsbjhasdcadsbdbjjdb",
+    "comment_star":0,
+    "like":"false"
+}
 服务器
-
 {
-
-  "msg": "评论成功",
-
-  "user_comment": 3
-
+    "msg": "评论成功",
+    "user_comment": 1
 }
 ```
 
@@ -223,17 +192,11 @@
 "comment_id":5
 
 服务器
-
 {
-
   "msg": "无权删除"
-
 }
-
 {
-
   "msg": "删除成功"
-
 }
 ```
 
@@ -267,6 +230,8 @@
 ​      "icon_src": "",
 
 ​      "address": "信工ewesfd楼",
+
+​      "like": "false",//临时标记，false表名该用户没有给ta点赞，true反之
 
 ​      "content": "heloosddscdssdfd there is a cat",
 
@@ -342,6 +307,8 @@
 
 ​          "user_id": 3,
 
+​      	   "like": "false",//临时标记，false表名该用户没有给ta点赞，true反之
+
 ​          "share_id": 2,
 
 ​          "comment_star": 0,
@@ -385,9 +352,19 @@
 
 用户点赞shareComment(put)
 
-47.103.210.124:7000/user/commentLike?comment_id=13&like=yes(no)
+47.103.210.124:7000/user/shareCommentLike
 
-客户端//yes点赞，no取消点赞
+客户端
+
+{
+
+  "user_id":5,
+
+  "user_comment_id":6,
+
+  "like":"true"//true点赞，false取消点赞
+
+}
 
 服务器
 
@@ -401,9 +378,19 @@
 
 用户点赞share(put)
 
-47.103.210.124:7000/user/commentLike?share_id=13&like=yes(no)
+47.103.210.124:7000/user/shareLike
 
-客户端//yes点赞，no取消点赞
+客户端
+
+{
+
+  "user_id":5,
+
+  "user_share_id":6,
+
+  "like":"true"//true点赞，false取消点赞
+
+}
 
 服务器
 
@@ -417,68 +404,5 @@
 
 
 
-用户删除share(delete)
-
-47.103.210.124:7000/user/deleteShare
-
-客户端
-
-服务器
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-用户删除share(delete)
-
-47.103.210.124:7000/user/deleteShare
-
-客户端
-
-服务器
-
-
-
-
-
-
-
-用户删除share(delete)
-
-47.103.210.124:7000/user/deleteShare
-
-客户端
-
-服务器
-
-
-
-
-
-用户删除share(delete)
-
-47.103.210.124:7000/user/deleteShare
-
-客户端
-
-服务器
-
-
-
-用户删除share(delete)
-
-47.103.210.124:7000/user/deleteShare
-
-客户端
-
-服务器
