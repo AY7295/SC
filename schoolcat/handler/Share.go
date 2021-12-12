@@ -128,13 +128,12 @@ func ViewShare (c *gin.Context){
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
 		var shareimg []model.ShareImage
-		var comment []model.UserComment
-		var shareLike model.ShareLike
 
 		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		shares[i].ShareImages = shareimg
 
+		var comment []model.UserComment
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		for k:=0;k<len(comment);k++{
@@ -145,6 +144,7 @@ func ViewShare (c *gin.Context){
 		}
 		shares[i].UserComment = comment
 
+		var shareLike model.ShareLike
 		res =DB.Where("share_id = ? AND user_id = ?", shares[i].ID, uid).Take(&shareLike)
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		shares[i].Like=shareLike.Like

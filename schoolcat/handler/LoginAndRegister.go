@@ -78,6 +78,11 @@ func Register(c *gin.Context) { //注册
 	if err != nil {
 		log.Panic(err)
 	}
+	if user.Password=="" || user.Email=="" {
+		c.AsciiJSON(400,gin.H{
+			"msg":"信息不完整",
+		})
+	}
 	fmt.Println(user.Email)
 	if EmailExist(user.Email) {
 		c.AsciiJSON(400, gin.H{

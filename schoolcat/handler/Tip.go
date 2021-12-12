@@ -25,7 +25,7 @@ func Tip(c *gin.Context){
 	}
 	c.AsciiJSON(200,gin.H{
 		"msg":"操作成功",
-		"CardID":tip.ID,
+		"TipID":tip.ID,
 	})
 }
 
@@ -56,21 +56,29 @@ func DeleteTip(c *gin.Context){
 func ViewTip (c *gin.Context){
 	DB := database.Link()
 	var tips []model.Tip
+	uid := c.GetHeader("user_id")
 	res :=DB.Find(&tips)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(tips);i++ {
 		var tipimg []model.TipSrc
-		var comment []model.TipComment
 		res =DB.Where("card_id=?",tips[i].ID).Find(&tipimg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
+		tips[i].TipSrc = tipimg
+
+		var comment []model.TipComment
 		res =DB.Where("card_id=?",tips[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		tips[i].TipSrc = tipimg
+		for k:=0;k<len(comment);k++{
+			var commentLike model.ShareCommentLike
+			res =DB.Where("user_comment_id = ? AND user_id = ?", comment[i].ID, uid).Take(&commentLike)
+			if res.Error!=nil{fmt.Println(res.Error);return}
+			comment[i].Like=commentLike.Like
+		}
 		tips[i].TipComment = comment
 		//fmt.Println(tips[i])
 	}
 	c.AsciiJSON(200,gin.H{
-		"shares": tips,
+		"tips": tips,
 	})
 }
 
@@ -86,6 +94,7 @@ func NewTipComment (c *gin.Context){
 	}
 	c.AsciiJSON(200,gin.H{
 		"msg":"评论成功",
+		"user_comment":comment.ID,
 	})
 }
 func DeleteTipComment (c *gin.Context) {
@@ -127,3 +136,21 @@ func TipCommentLike (c *gin.Context){
 		"shares": "ok",
 	})
 }
+
+//var commentLike model.ShareCommentLike
+//var comment model.UserComment
+//err :=c.ShouldBind(&commentLike)
+//if err!=nil{log.Println(err);return}
+//DB := database.Link()
+//DB.Create(&commentLike)
+//res := DB.Where("id = ?",commentLike.UserCommentID).Take(&comment)
+//if res.Error!=nil{fmt.Println(res.Error);return}
+//if commentLike.Like == "true"{
+//comment.CommentStar+=1
+//}else{
+//comment.CommentStar-=1
+//}
+//DB.Save(&comment)
+//c.AsciiJSON(200,gin.H{
+//"shares": "ok",
+//})
