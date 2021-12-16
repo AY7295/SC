@@ -26,15 +26,16 @@ func NewShare(c *gin.Context){
 		"ShareID":share.ID,
 	})
 }
+
 func DeleteShare (c *gin.Context){
 	var share model.Share
-	uid,err := strconv.Atoi(c.GetHeader("user_id"))
+	uid,err := strconv.Atoi(c.Query("user_id"))
 	if err != nil {
 		c.AsciiJSON(400,gin.H{
 			"msg":"user_id错误",
 		})
 	}
-	shareid := c.GetHeader("share_id")
+	shareid := c.Query("share_id")
 	DB := database.Link()
 	res := DB.Where("id = ?",shareid).Take(&share)
 	if res.Error != nil{fmt.Println(res.Error);return}
@@ -50,6 +51,7 @@ func DeleteShare (c *gin.Context){
 	}
 
 }
+
 func NewShareComment (c *gin.Context){
 	var comment model.UserComment
 	err :=c.ShouldBind(&comment)
@@ -64,9 +66,10 @@ func NewShareComment (c *gin.Context){
 		"user_comment":comment.ID,
 	})
 }
+
 func DeleteShareComment (c *gin.Context){
 	var comment model.UserComment
-		uid,_ := strconv.Atoi(c.GetHeader("user_id"))
+		uid,_ := strconv.Atoi(c.Query("user_id"))
 		commentid := c.GetHeader("comment_id")
 		DB := database.Link()
 		res := DB.Where("id = ?",commentid).Take(&comment)
@@ -88,7 +91,7 @@ func Search (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
 	keywords :=c.Query("keywords")
-	uid := c.GetHeader("user_id")
+	uid := c.Query("user_id")
 	res :=DB.Where("content LIKE ?","%"+keywords+"%").Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
@@ -116,6 +119,7 @@ func Search (c *gin.Context){
 		//fmt.Println(shares[i])
 	}
 	c.AsciiJSON(200,gin.H{
+		//"token":c.Get("token"),
 		"shares": shares,
 	})
 }
@@ -123,7 +127,7 @@ func Search (c *gin.Context){
 func ViewShare (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
-	uid := c.GetHeader("user_id")
+	uid := c.Query("user_id")
 	res :=DB.Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
@@ -158,7 +162,7 @@ func ViewShare (c *gin.Context){
 func SelfShare (c *gin.Context){
 	DB := database.Link()
 	var shares []model.Share
-	uid := c.GetHeader("user_id")
+	uid := c.Query("user_id")
 	//fmt.Println(uid)
 	res :=DB.Where("user_id = ?",uid).Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}

@@ -9,9 +9,14 @@ import (
 func Router() *gin.Engine  {
 	engine := gin.Default()
 	engine.Use(midware.CORS())
-	admin := engine.Group("/admin",midware.Admin())
-	user :=	engine.Group("/user")
 
+	engine.POST("/login",handler.Login)//登录
+	engine.POST("/register",handler.Register)//注册
+
+	admin := engine.Group("/admin",midware.Admin(),midware.JWT())
+	user :=	engine.Group("/user",midware.JWT())
+
+	//token := engine.Group()
 
 	//百科相关
 		admin.POST("/tip",handler.Tip)//add tip
@@ -33,8 +38,6 @@ func Router() *gin.Engine  {
 
 
 	//用户相关
-		 user.POST("/login",handler.Login)//登录
-		 user.POST("/register",handler.Register)//注册
 		 user.POST("/info",handler.Info)//添加更改信息：邮箱，性别，学校，昵称，简介
 
 

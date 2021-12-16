@@ -1,8 +1,15 @@
 package model
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
 )
+
+type Claim struct {
+	Email string
+	jwt.StandardClaims
+}
+
 
 type User struct {
 	gorm.Model        // 这个id用来标记每个人的share

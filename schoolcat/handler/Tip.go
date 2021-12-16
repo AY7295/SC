@@ -32,10 +32,10 @@ func Tip(c *gin.Context){
 func DeleteTip(c *gin.Context){
 	DB := database.Link()
 	var tip model.Tip
-	tipid := c.GetHeader("tip_id")
+	tipid := c.Query("tip_id")
 
 	var admin model.Admin
-	uid,_ := strconv.Atoi(c.GetHeader("user_id"))//执行删除操作者的id
+	uid,_ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
 	res := DB.Where("user_id = ?",uid).Take(&admin)
 	if res.Error != nil{fmt.Println(res.Error);return}
 
@@ -56,7 +56,7 @@ func DeleteTip(c *gin.Context){
 func ViewTip (c *gin.Context){
 	DB := database.Link()
 	var tips []model.Tip
-	uid := c.GetHeader("user_id")
+	uid := c.Query("user_id")
 	res :=DB.Find(&tips)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(tips);i++ {
@@ -79,6 +79,7 @@ func ViewTip (c *gin.Context){
 	}
 	c.AsciiJSON(200,gin.H{
 		"tips": tips,
+		//"token":c.Get("token"),
 	})
 }
 
@@ -99,8 +100,8 @@ func NewTipComment (c *gin.Context){
 }
 func DeleteTipComment (c *gin.Context) {
 	var comment model.TipComment
-	uid, _ := strconv.Atoi(c.GetHeader("user_id"))//执行删除操作者的id
-	commentid := c.GetHeader("comment_id")
+	uid, _ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
+	commentid := c.Query("comment_id")
 	DB := database.Link()
 	res := DB.Where("id = ?", commentid).Take(&comment)
 	if res.Error != nil {

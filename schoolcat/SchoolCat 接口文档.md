@@ -54,6 +54,7 @@
   "msg": "欢迎使用",
   "userid": 2,
   "username": "gvhgg"
+  "token":....
 
 }
 {
@@ -62,6 +63,7 @@
 	"auth":"12345",//管理员地任何操作都要在header里面加上这个键值对
 	"username":user0.Username,
 	"iconsrc":user0.IconSrc,
+	"token":....
 }
 {
 	"msg": "用户名或者密码有误"

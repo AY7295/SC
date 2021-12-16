@@ -30,10 +30,10 @@ func Card (c *gin.Context){
 func DeleteCard (c *gin.Context){
 	DB := database.Link()
 	var card model.CatCard
-	cardid := c.GetHeader("card_id")
+	cardid := c.Query("card_id")
 
 	var user model.User
-	uid,_ := strconv.Atoi(c.GetHeader("user_id"))//执行删除操作者的id
+	uid,_ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
 	res := DB.Where("id = ?",uid).Take(&user)
 	if res.Error != nil{fmt.Println(res.Error);return}
 
@@ -87,8 +87,8 @@ func NewCardComment (c *gin.Context){
 }
 func DeleteCardComment (c *gin.Context){
 	var comment model.CatCardComment
-	uid,_ := strconv.Atoi(c.GetHeader("user_id"))
-	commentid := c.GetHeader("comment_id")
+	uid,_ := strconv.Atoi(c.Query("user_id"))
+	commentid := c.Query("comment_id")
 	DB := database.Link()
 	res := DB.Where("id = ?",commentid).Take(&comment)
 	if res.Error != nil{fmt.Println(res.Error);return}

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"SchoolCat/database"
+	"SchoolCat/midware"
 	"SchoolCat/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,9 @@ func Login(c *gin.Context) { //登录
 		log.Println(err)
 		return
 	}
+	DB := database.Link()
+	res := DB.Where("email = ?", user.Email).Take(&user0)
+	token := midware.GenerateToken(user.Email)
 	//fmt.Println(user.Password, user.Email)
 	if !EmailExist(user.Email) || !PasswordRight(user.Password, user.Email) {
 		c.AsciiJSON(400, gin.H{
@@ -54,11 +58,11 @@ func Login(c *gin.Context) { //登录
 			"auth":"12345",//管理员地任何操作都要在header里面加上这个键值对
 			"username":user0.Username,
 			"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
+			"token":token,
 		})
 		return
 	}
-	DB := database.Link()
-	res := DB.Where("email = ?", user.Email).Take(&user0)
+
 	if res.Error != nil {
 		log.Println(res.Error)
 	}
@@ -67,6 +71,7 @@ func Login(c *gin.Context) { //登录
 		"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
 		"username":user0.Username,
 		"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
+		"token":token,
 	})
 
 	//fmt.Println(EmailExist(user.Email), PasswordRight(user.Password, user.Email))
