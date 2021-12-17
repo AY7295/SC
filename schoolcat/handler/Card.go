@@ -3,13 +3,14 @@ package handler
 import (
 	"SchoolCat/database"
 	"SchoolCat/model"
+	response "SchoolCat/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
 )
 
-func Card (c *gin.Context){
+func NewCard (c *gin.Context){
 	var card model.CatCard
 	err:=c.ShouldBind(&card)
 	if err != nil {
@@ -21,10 +22,7 @@ func Card (c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"操作成功",
-		"CardID":card.ID,
-	})
+	response.CardSucceed(c,card.ID)
 }
 
 func DeleteCard (c *gin.Context){
@@ -38,16 +36,12 @@ func DeleteCard (c *gin.Context){
 	if res.Error != nil{fmt.Println(res.Error);return}
 
 	if  AdminExist(user.Email) {
-		c.AsciiJSON(400,gin.H{
-			"msg":"无权删除",
-		})
+		response.UserIdWrong(c)
 	}else {
 		res = DB.Where("id = ?",cardid).Take(&card)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		DB.Delete(&card)
-		c.AsciiJSON(400,gin.H{
-			"msg":"删除成功",
-		})
+		response.DeleteSucceed(c)
 	}
 }
 
@@ -67,10 +61,9 @@ func ViewCard (c *gin.Context){
 		cards[i].CatCardComment = comment
 		//fmt.Println(shares[i])
 	}
-	c.AsciiJSON(200,gin.H{
-		"shares": cards,
-	})
+	response.DisplayCards(c,cards)
 }
+
 
 func NewCardComment (c *gin.Context){
 	var comment model.CatCardComment
@@ -81,9 +74,7 @@ func NewCardComment (c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"评论成功",
-	})
+	response.CommentSucceed(c,comment.ID)
 }
 func DeleteCardComment (c *gin.Context){
 	var comment model.CatCardComment
@@ -93,13 +84,9 @@ func DeleteCardComment (c *gin.Context){
 	res := DB.Where("id = ?",commentid).Take(&comment)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if comment.UserID !=uint(uid) {
-		c.AsciiJSON(400,gin.H{
-			"msg":"无权删除",
-		})
+		response.UserIdWrong(c)
 	}else {
 		DB.Delete(&comment)
-		c.AsciiJSON(400,gin.H{
-			"msg":"删除成功",
-		})
+		response.DeleteSucceed(c)
 	}
 }

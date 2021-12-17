@@ -4,6 +4,7 @@ import (
 	"SchoolCat/database"
 	"SchoolCat/midware"
 	"SchoolCat/model"
+	response "SchoolCat/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -47,32 +48,19 @@ func Login(c *gin.Context) { //登录
 	token := midware.GenerateToken(user.Email)
 	//fmt.Println(user.Password, user.Email)
 	if !EmailExist(user.Email) || !PasswordRight(user.Password, user.Email) {
-		c.AsciiJSON(400, gin.H{
-			"msg": "用户名或者密码有误",
-		})
+
+		response.LoginFailed(c)
 		return
 	}else if AdminExist(user.Email){
-		c.AsciiJSON(200, gin.H{
-			"msg": "欢迎使用,admin",
-			"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
-			"auth":"12345",//管理员地任何操作都要在header里面加上这个键值对
-			"username":user0.Username,
-			"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
-			"token":token,
-		})
+
+		response.AdminLogin(c,user0,token)
 		return
 	}
 
 	if res.Error != nil {
 		log.Println(res.Error)
 	}
-	c.AsciiJSON(200, gin.H{
-		"msg": "欢迎使用",
-		"userid":user0.ID,//登陆时会传给前端一个ID，用户的每个操作都要返回一个ID，大写的
-		"username":user0.Username,
-		"iconsrc":user0.IconSrc,//这2个价值对在用户评论和发表分享时返回
-		"token":token,
-	})
+		response.UserLogin(c,user0,token)
 
 	//fmt.Println(EmailExist(user.Email), PasswordRight(user.Password, user.Email))
 }
@@ -84,15 +72,11 @@ func Register(c *gin.Context) { //注册
 		log.Panic(err)
 	}
 	if user.Password=="" || user.Email=="" {
-		c.AsciiJSON(400,gin.H{
-			"msg":"信息不完整",
-		})
+		response.InfoLost(c)
 	}
 	fmt.Println(user.Email)
 	if EmailExist(user.Email) {
-		c.AsciiJSON(400, gin.H{
-			"msg": "邮箱已被注册",
-		})
+		response.EmailRegistered(c)
 		return
 	} else {
 
@@ -111,10 +95,7 @@ func Register(c *gin.Context) { //注册
 			log.Println(err)
 			return
 		}
-		c.AsciiJSON(200, gin.H{
-			"msg": "注册成功",
-			"user_id":user.ID,
-		})
+		response.RegisterSucceed(c,user.ID)
 	}
 }
 
@@ -134,9 +115,5 @@ func Info(c *gin.Context) {
 	user0.Email=user.Email
 	user0.Password=user.Password
 	DB.Save(&user0)
-	c.AsciiJSON(200, gin.H{
-		"msg": "操作成功",
-		"username":user0.Username,
-		"iconsrc":user0.IconSrc,//如果用户没上传头像就为空
-	})
+	response.UpdateInfo(c,user0)
 }

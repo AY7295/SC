@@ -3,6 +3,7 @@ package handler
 import (
 	"SchoolCat/database"
 	"SchoolCat/model"
+	response "SchoolCat/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -23,16 +24,13 @@ func Tip(c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"操作成功",
-		"TipID":tip.ID,
-	})
+	response.TipSucceed(c,tip.ID)
 }
 
 func DeleteTip(c *gin.Context){
 	DB := database.Link()
 	var tip model.Tip
-	tipid := c.Query("tip_id")
+	tipId := c.Query("tip_id")
 
 	var admin model.Admin
 	uid,_ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
@@ -40,16 +38,12 @@ func DeleteTip(c *gin.Context){
 	if res.Error != nil{fmt.Println(res.Error);return}
 
 	if  res.RowsAffected==0 {
-		c.AsciiJSON(400,gin.H{
-			"msg":"无权删除",
-		})
+		response.UserIdWrong(c)
 	}else {
-		res = DB.Where("id = ?",tipid).Take(&tip)
+		res = DB.Where("id = ?", tipId).Take(&tip)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		DB.Delete(&tip)
-		c.AsciiJSON(400,gin.H{
-			"msg":"删除成功",
-		})
+		response.DeleteSucceed(c)
 	}
 }
 
@@ -77,10 +71,7 @@ func ViewTip (c *gin.Context){
 		tips[i].TipComment = comment
 		//fmt.Println(tips[i])
 	}
-	c.AsciiJSON(200,gin.H{
-		"tips": tips,
-		//"token":c.Get("token"),
-	})
+	response.DisplayTips(c,tips)
 }
 
 
@@ -93,10 +84,7 @@ func NewTipComment (c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"评论成功",
-		"user_comment":comment.ID,
-	})
+	response.CommentSucceed(c,comment.ID)
 }
 func DeleteTipComment (c *gin.Context) {
 	var comment model.TipComment
@@ -109,14 +97,10 @@ func DeleteTipComment (c *gin.Context) {
 		return
 	}
 	if comment.UserID != uint(uid) {
-		c.AsciiJSON(400, gin.H{
-			"msg": "无权删除",
-		})
+		response.UserIdWrong(c)
 	} else {
 		DB.Delete(&comment)
-		c.AsciiJSON(400, gin.H{
-			"msg": "删除成功",
-		})
+		response.DeleteSucceed(c)
 	}
 }
 
@@ -133,7 +117,5 @@ func TipCommentLike (c *gin.Context){
 		comment.CommentStar-=1
 	}
 	DB.Save(&comment)
-	c.AsciiJSON(200,gin.H{
-		"shares": "ok",
-	})
+	response.Like(c)
 }

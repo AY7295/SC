@@ -1,19 +1,13 @@
 package database
 
 import (
+	"SchoolCat/config"
 	"SchoolCat/model"
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"log"
-)
-
-const (
-	userName = "root"
-	password = "12345qwert"
-	ip       = "127.0.0.1"
-	port     = "3306"
-	dbName   = "schoolcat"
 )
 
 func Link() *gorm.DB {
@@ -21,7 +15,7 @@ func Link() *gorm.DB {
 		DB  *gorm.DB
 		err error
 	)
-	path := userName + ":" + password + "@tcp(" + ip + ":" + port + ")/" + dbName + "?charset=utf8&parseTime=true&loc=Local"
+	path := config.DBUser + ":" + config.DBPWD + "@tcp(" + config.DBHost + ":" + config.DBPort + ")/" + config.DBName + "?charset=utf8&parseTime=true&loc=Local"
 	DB, err = gorm.Open(mysql.New(mysql.Config{
 		DSN:               path,
 		DefaultStringSize: 256,
@@ -31,7 +25,7 @@ func Link() *gorm.DB {
 		},
 	})
 	if err != nil {
-		log.Panic(err.Error())
+		fmt.Println(err.Error())
 	}
 	//根据model创建一个表
 	err = DB.AutoMigrate(&model.User{}, &model.Admin{}, &model.Share{}, &model.ShareImage{}, &model.UserComment{}, &model.CatCard{}, &model.CatCardSrc{}, &model.CatCardComment{}, &model.Tip{},  &model.TipComment{},&model.TipCommentLike{},&model.TipSrc{},&model.ShareLike{},&model.ShareCommentLike{})

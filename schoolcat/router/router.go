@@ -1,12 +1,16 @@
 package router
 
 import (
+	"SchoolCat/config"
 	"SchoolCat/handler"
 	"SchoolCat/midware"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
-func Router() *gin.Engine  {
+func Router()   {
+	gin.SetMode(config.AppMode)
+
 	engine := gin.Default()
 	engine.Use(midware.CORS())
 
@@ -29,8 +33,8 @@ func Router() *gin.Engine  {
 
 
 	//资料卡片相关
-	admin.POST("/card",handler.Card)//add card
-	admin.DELETE("/card",handler.DeleteCard)//delete card
+	admin.POST("/newCard",handler.NewCard)//add card
+	admin.DELETE("/deleteCard",handler.DeleteCard)//delete card
 
 	user.POST("/newCArdComment",handler.NewCardComment)//用户添加评论
 	user.DELETE("/deleteCardComment",handler.DeleteCardComment)
@@ -55,5 +59,8 @@ func Router() *gin.Engine  {
 		 user.PUT("/shareCommentLike",handler.ShareCommentLike)//用户点赞
 		 user.PUT("/shareLike",handler.ShareLike)//用户点赞
 
-	return engine
+	err := engine.Run(config.HttpPort)
+	if err != nil {
+		fmt.Println("路由运行端口出错",err)
+	}
 }

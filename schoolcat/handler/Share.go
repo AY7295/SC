@@ -3,6 +3,7 @@ package handler
 import (
 	"SchoolCat/database"
 	"SchoolCat/model"
+	response "SchoolCat/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -21,33 +22,24 @@ func NewShare(c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"分享成功",
-		"ShareID":share.ID,
-	})
+	response.ShareSucceed(c,share.ID)
 }
 
 func DeleteShare (c *gin.Context){
 	var share model.Share
 	uid,err := strconv.Atoi(c.Query("user_id"))
 	if err != nil {
-		c.AsciiJSON(400,gin.H{
-			"msg":"user_id错误",
-		})
+		response.UserIdWrong(c)
 	}
 	shareid := c.Query("share_id")
 	DB := database.Link()
 	res := DB.Where("id = ?",shareid).Take(&share)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if share.UserID !=uint(uid) {
-		c.AsciiJSON(400,gin.H{
-			"msg":"无权删除",
-		})
+		response.UserIdWrong(c)
 	}else {
 		DB.Delete(&share)
-		c.AsciiJSON(400,gin.H{
-			"msg":"删除成功",
-		})
+		response.DeleteSucceed(c)
 	}
 
 }
@@ -61,10 +53,7 @@ func NewShareComment (c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	c.AsciiJSON(200,gin.H{
-		"msg":"评论成功",
-		"user_comment":comment.ID,
-	})
+	response.CommentSucceed(c,comment.ID)
 }
 
 func DeleteShareComment (c *gin.Context){
@@ -75,14 +64,10 @@ func DeleteShareComment (c *gin.Context){
 		res := DB.Where("id = ?",commentid).Take(&comment)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		if comment.UserID !=uint(uid) {
-			c.AsciiJSON(400,gin.H{
-				"msg":"无权删除",
-			})
+			response.UserIdWrong(c)
 		}else {
 			DB.Delete(&comment)
-			c.AsciiJSON(400,gin.H{
-				"msg":"删除成功",
-			})
+			response.DeleteSucceed(c)
 		}
 
 }
@@ -118,10 +103,7 @@ func Search (c *gin.Context){
 		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
-	c.AsciiJSON(200,gin.H{
-		//"token":c.Get("token"),
-		"shares": shares,
-	})
+	response.DisplayShares(c,shares)
 }
 
 func ViewShare (c *gin.Context){
@@ -154,9 +136,7 @@ func ViewShare (c *gin.Context){
 		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
-	c.AsciiJSON(200,gin.H{
-		"shares": shares,
-	})
+	response.DisplayShares(c,shares)
 }
 
 func SelfShare (c *gin.Context){
@@ -190,9 +170,7 @@ func SelfShare (c *gin.Context){
 		shares[i].Like=shareLike.Like
 		//fmt.Println(shares[i])
 	}
-	c.AsciiJSON(200,gin.H{
-		"shares": shares,
-	})
+	response.DisplayShares(c,shares)
 }
 
 func ShareCommentLike (c *gin.Context){
@@ -210,9 +188,9 @@ func ShareCommentLike (c *gin.Context){
 		comment.CommentStar-=1
 	}
 	DB.Save(&comment)
-	c.AsciiJSON(200,gin.H{
-		"shares": "ok",
-	})
+
+	response.Like(c)
+
 }
 
 func ShareLike (c *gin.Context){
@@ -237,8 +215,6 @@ func ShareLike (c *gin.Context){
 		shareLike0.Like = shareLike.Like
 		DB.Save(&shareLike0)
 	}
-	c.AsciiJSON(200,gin.H{
-		"shares": "ok",
-	})
+	response.Like(c)
 
 }

@@ -1,6 +1,7 @@
 package midware
 
 import (
+	"SchoolCat/config"
 	"SchoolCat/database"
 	"SchoolCat/model"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 	"time"
 )
 
-var jwtKey = []byte ("secretKey")
+var jwtKey = []byte (config.JwtKey)
 
 func GenerateToken(email string) (secretToken string) {
 	var claims = model.Claim{
