@@ -10,6 +10,8 @@ import (
 	"strconv"
 )
 
+//var DB = database.Link()
+
 func NewCard (c *gin.Context){
 	var card model.CatCard
 	err:=c.ShouldBind(&card)
@@ -59,8 +61,8 @@ func ViewCard (c *gin.Context){
 		if res.Error!=nil{fmt.Println(res.Error);return}
 		cards[i].CatCardSrc = cardimg
 		cards[i].CatCardComment = comment
-		//fmt.Println(shares[i])
 	}
+	//fmt.Println(cards)
 	response.DisplayCards(c,cards)
 }
 

@@ -2,7 +2,7 @@
 
 **注册（post）**
 
-47.103.210.124:7000/user/register
+ip:7000/user/register
 
 ```
 客户端
@@ -33,8 +33,7 @@
 ```
 
 登录（post）
-
-47.103.210.124:7000/user/login
+ip:7000/user/login
 
 ```
 客户端
@@ -70,7 +69,7 @@
 
 添加和更改信息(post)
 
-47.103.210.124:7000/user/info
+ip:7000/user/info
 
 ```
 客户端
@@ -106,7 +105,7 @@
 
 用户添加share(post)
 
-47.103.210.124:7000/user/newShare
+ip:7000/user/newShare
 
 ```
 客户端
@@ -135,7 +134,7 @@
 
 用户删除share(delete)
 
-47.103.210.124:7000/user/deleteShare
+ip:7000/user/deleteShare
 
 ```
 客户端(在header里面加)
@@ -156,7 +155,7 @@
 
 用户添加share评论(post)
 
-47.103.210.124:7000/user/newShareComment
+ip:7000/user/newShareComment
 
 ```
 客户端
@@ -178,7 +177,7 @@
 
 用户删除share评论(delete)
 
-47.103.210.124:7000/user/deleteShareComment
+ip:7000/user/deleteShareComment
 
 ```
 客户端(在header里面加)
@@ -198,7 +197,7 @@
 
 用户搜索share(get)
 
-47.103.210.124:7000/user/search?keywords=
+ip:7000/user/search?keywords=
 
 ```
 客户端
@@ -326,7 +325,7 @@
 
 用户请求share(get)
 
-47.103.210.124:7000/user/viewShare
+ip:7000/user/viewShare
 
 客户端
 
@@ -336,7 +335,7 @@
 
 用户请求自己的share(get)
 
-47.103.210.124:7000/selfShare
+ip:7000/selfShare
 
 客户端（在header里加）
 
@@ -348,7 +347,7 @@
 
 用户点赞shareComment(put)
 
-47.103.210.124:7000/user/shareCommentLike
+ip:7000/user/shareCommentLike
 
 客户端
 
@@ -374,7 +373,7 @@
 
 用户点赞share(put)
 
-47.103.210.124:7000/user/shareLike
+ip:7000/user/shareLike
 
 客户端
 
@@ -400,7 +399,7 @@
 
 管理员添加tip（post）
 
-47.103.210.124:7000/admin/tip
+ip:7000/admin/tip
 
 客户端
 
@@ -448,7 +447,7 @@
 
 管理员删除tip(delete)
 
-47.103.210.124:7000/user/tip
+ip:7000/user/tip
 
 客户端（在header里加）
 
@@ -470,7 +469,7 @@
 
 用户请求新的tips
 
-47.103.210.124:7000/user/newTip
+ip:7000/user/newTip
 
 客户端（在header里加）
 
@@ -484,7 +483,7 @@
 
 用户添加tip的评论（post）
 
-47.103.210.124:7000/user/newTipComment
+ip:7000/user/newTipComment
 
 客户端
 
@@ -520,7 +519,7 @@
 
 用户删除share(delete)
 
-47.103.210.124:7000/user/deleteShare
+ip:7000/user/deleteShare
 
 客户端
 
