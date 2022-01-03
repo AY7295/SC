@@ -66,9 +66,9 @@ func JWT() gin.HandlerFunc {
 			return
 		}
 		claim := ParseToken(parts[1])
-		DB := database.Link()
+
 		var user model.User
-		DB.Where("id = ?",uid).Take(&user)
+		database.DB.Where("id = ?",uid).Take(&user)
 		if user.Email!=claim.Email {
 			c.AsciiJSON(400, gin.H{
 				"msg":  "无效的Token",

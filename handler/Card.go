@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"SchoolCat/database"
 	"SchoolCat/model"
 	response "SchoolCat/util"
 	"fmt"
@@ -10,7 +9,6 @@ import (
 	"strconv"
 )
 
-//var DB = database.Link()
 
 func NewCard (c *gin.Context){
 	var card model.CatCard
@@ -18,7 +16,6 @@ func NewCard (c *gin.Context){
 	if err != nil {
 		fmt.Println(err); return
 	}
-	DB := database.Link()
 	//fmt.Println(card)
 	err = DB.Create(&card).Error
 	if err != nil {
@@ -28,9 +25,9 @@ func NewCard (c *gin.Context){
 }
 
 func DeleteCard (c *gin.Context){
-	DB := database.Link()
+
 	var card model.CatCard
-	cardid := c.Query("card_id")
+	cardId := c.Query("card_id")
 
 	var user model.User
 	uid,_ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
@@ -40,7 +37,7 @@ func DeleteCard (c *gin.Context){
 	if  AdminExist(user.Email) {
 		response.UserIdWrong(c)
 	}else {
-		res = DB.Where("id = ?",cardid).Take(&card)
+		res = DB.Where("id = ?",cardId).Take(&card)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		DB.Delete(&card)
 		response.DeleteSucceed(c)
@@ -48,7 +45,7 @@ func DeleteCard (c *gin.Context){
 }
 
 func ViewCard (c *gin.Context){
-	DB := database.Link()
+
 	var cards []model.CatCard
 	res :=DB.Find(&cards).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
@@ -71,7 +68,7 @@ func NewCardComment (c *gin.Context){
 	var comment model.CatCardComment
 	err :=c.ShouldBind(&comment)
 	if err!=nil{fmt.Println(err);return}
-	DB:=database.Link()
+
 	err = DB.Create(&comment).Error
 	if err != nil {
 		log.Println(err)
@@ -82,7 +79,7 @@ func DeleteCardComment (c *gin.Context){
 	var comment model.CatCardComment
 	uid,_ := strconv.Atoi(c.Query("user_id"))
 	commentid := c.Query("comment_id")
-	DB := database.Link()
+
 	res := DB.Where("id = ?",commentid).Take(&comment)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if comment.UserID !=uint(uid) {

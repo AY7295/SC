@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"SchoolCat/database"
 	"SchoolCat/model"
 	response "SchoolCat/util"
 	"fmt"
@@ -18,7 +17,7 @@ func Tip(c *gin.Context){
 	if err != nil {
 		fmt.Println(err); return
 	}
-	DB := database.Link()
+
 	//fmt.Println(tip)
 	err = DB.Create(&tip).Error
 	if err != nil {
@@ -28,7 +27,7 @@ func Tip(c *gin.Context){
 }
 
 func DeleteTip(c *gin.Context){
-	DB := database.Link()
+
 	var tip model.Tip
 	tipId := c.Query("tip_id")
 
@@ -48,7 +47,7 @@ func DeleteTip(c *gin.Context){
 }
 
 func ViewTip (c *gin.Context){
-	DB := database.Link()
+
 	var tips []model.Tip
 	uid := c.Query("user_id")
 	res :=DB.Find(&tips)
@@ -79,7 +78,7 @@ func NewTipComment (c *gin.Context){
 	var comment model.TipComment
 	err :=c.ShouldBind(&comment)
 	if err!=nil{fmt.Println(err);return}
-	DB:=database.Link()
+
 	err = DB.Create(&comment).Error
 	if err != nil {
 		log.Println(err)
@@ -90,7 +89,7 @@ func DeleteTipComment (c *gin.Context) {
 	var comment model.TipComment
 	uid, _ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
 	commentid := c.Query("comment_id")
-	DB := database.Link()
+
 	res := DB.Where("id = ?", commentid).Take(&comment)
 	if res.Error != nil {
 		fmt.Println(res.Error)
@@ -108,7 +107,7 @@ func TipCommentLike (c *gin.Context){
 	var comment model.TipComment
 	commentid :=c.Query("comment_id")
 	like :=c.Query("like")
-	DB := database.Link()
+
 	res := DB.Where("id = ?",commentid).Take(&comment)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	if like == "true"{

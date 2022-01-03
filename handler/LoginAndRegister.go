@@ -11,16 +11,20 @@ import (
 	"log"
 )
 
+
+var DB = database.DB
+
+
 func EmailExist(email string) bool { //检查名字
 	var user model.User
-	DB := database.Link()
+
 	res := DB.Where("email = ?", email).Take(&user)
 	return res.RowsAffected != 0
 }
 
 func PasswordRight(pwd string, email string) bool { //检查密码
 	var user model.User
-	DB := database.Link()
+
 	res := DB.Where("email = ?", email).Take(&user)
 	if res.Error != nil {
 		log.Println(res.Error)
@@ -31,7 +35,7 @@ func PasswordRight(pwd string, email string) bool { //检查密码
 
 func AdminExist(email string) bool {
 	var admin model.Admin
-	DB := database.Link()
+
 	res := DB.Where("email = ?", email).Take(&admin)
 	return res.RowsAffected != 0
 }
@@ -43,7 +47,7 @@ func Login(c *gin.Context) { //登录
 		log.Println(err)
 		return
 	}
-	DB := database.Link()
+
 	res := DB.Where("email = ?", user.Email).Take(&user0)
 	token := midware.GenerateToken(user.Email)
 	//fmt.Println(user.Password, user.Email)
@@ -88,7 +92,7 @@ func Register(c *gin.Context) { //注册
 		encodePW := string(hash)
 		//fmt.Println(encodePW)
 		user.Password = encodePW
-		DB := database.Link()
+
 		//fmt.Println(user)
 		err = DB.Create(&user).Error
 		if err != nil {
@@ -106,7 +110,7 @@ func Info(c *gin.Context) {
 		log.Println(err)
 		return
 	}
-	DB := database.Link()
+
 	res := DB.Where("ID = ?", user0.ID).Take(&user)
 	if res.Error != nil {
 		log.Println(res.Error)

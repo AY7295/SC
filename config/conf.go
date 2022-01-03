@@ -1,6 +1,7 @@
 package config
 
 import (
+	"SchoolCat/database"
 	"fmt"
 	"gopkg.in/ini.v1"
 )
@@ -23,7 +24,7 @@ var (
 
 
 
-func init (){
+func Init (){
 /*	fmt.Println("选择配置文件：")
 	var ConfigFileName string
 	n, err := fmt.Scanln(&ConfigFileName)
@@ -39,6 +40,8 @@ func init (){
 	LoadSever(file)
 	LoadData(file)
 	LoadKey(file)
+	path := DBUser + ":" + DBPWD + "@tcp(" + DBHost + ":" + DBPort + ")/" + DBName + "?charset=utf8&parseTime=true&loc=Local"
+	database.Link(path)
 }
 
 

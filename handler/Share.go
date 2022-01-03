@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"SchoolCat/database"
 	"SchoolCat/model"
 	response "SchoolCat/util"
 	"fmt"
@@ -16,7 +15,7 @@ func NewShare(c *gin.Context){
 	if err != nil {
 		fmt.Println(err); return
 	}
-	DB := database.Link()
+
 	//fmt.Println(share)
 	err = DB.Create(&share).Error
 	if err != nil {
@@ -32,7 +31,7 @@ func DeleteShare (c *gin.Context){
 		response.UserIdWrong(c)
 	}
 	shareid := c.Query("share_id")
-	DB := database.Link()
+
 	res := DB.Where("id = ?",shareid).Take(&share)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if share.UserID !=uint(uid) {
@@ -48,7 +47,7 @@ func NewShareComment (c *gin.Context){
 	var comment model.UserComment
 	err :=c.ShouldBind(&comment)
 	if err!=nil{fmt.Println(err);return}
-	DB:=database.Link()
+
 	err = DB.Create(&comment).Error
 	if err != nil {
 		log.Println(err)
@@ -60,7 +59,7 @@ func DeleteShareComment (c *gin.Context){
 	var comment model.UserComment
 		uid,_ := strconv.Atoi(c.Query("user_id"))
 		commentid := c.GetHeader("comment_id")
-		DB := database.Link()
+
 		res := DB.Where("id = ?",commentid).Take(&comment)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		if comment.UserID !=uint(uid) {
@@ -73,7 +72,7 @@ func DeleteShareComment (c *gin.Context){
 }
 
 func Search (c *gin.Context){
-	DB := database.Link()
+
 	var shares []model.Share
 	keywords :=c.Query("keywords")
 	uid := c.Query("user_id")
@@ -107,7 +106,7 @@ func Search (c *gin.Context){
 }
 
 func ViewShare (c *gin.Context){
-	DB := database.Link()
+
 	var shares []model.Share
 	uid := c.Query("user_id")
 	res :=DB.Find(&shares).Limit(10).Offset(10)
@@ -140,7 +139,7 @@ func ViewShare (c *gin.Context){
 }
 
 func SelfShare (c *gin.Context){
-	DB := database.Link()
+
 	var shares []model.Share
 	uid := c.Query("user_id")
 	//fmt.Println(uid)
@@ -178,7 +177,7 @@ func ShareCommentLike (c *gin.Context){
 	var comment model.UserComment
 	err :=c.ShouldBind(&commentLike)
 	if err!=nil{log.Println(err);return}
-	DB := database.Link()
+
 	DB.Create(&commentLike)
 	res := DB.Where("id = ?",commentLike.UserCommentID).Take(&comment)
 	if res.Error!=nil{fmt.Println(res.Error);return}
@@ -199,7 +198,7 @@ func ShareLike (c *gin.Context){
 	var share model.Share
 	err :=c.ShouldBind(&shareLike)
 	if err!=nil{log.Println(err);return}
-	DB := database.Link()
+
 	res := DB.Where("id = ?",shareLike.ShareID).Take(&share)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	if shareLike.Like == "true" {

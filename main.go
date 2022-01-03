@@ -1,13 +1,13 @@
 package main
 
 import (
-	"SchoolCat/database"
+	"SchoolCat/config"
 	"SchoolCat/router"
 	"fmt"
 )
 
 func main() {
 	fmt.Println("SchoolCat")
-	database.Link()
+	config.Init()
 	router.Router()
 }
