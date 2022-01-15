@@ -53,10 +53,10 @@ func ViewTip (c *gin.Context){
 	res :=DB.Find(&tips)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(tips);i++ {
-		var tipimg []model.TipSrc
-		res =DB.Where("tip_id=?",tips[i].ID).Find(&tipimg)
+		var tipImg []model.TipSrc
+		res =DB.Where("tip_id=?",tips[i].ID).Find(&tipImg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		tips[i].TipSrc = tipimg
+		tips[i].TipSrc = tipImg
 
 		var comment []model.TipComment
 		res =DB.Where("tip_id=?",tips[i].ID).Find(&comment)
@@ -88,9 +88,9 @@ func NewTipComment (c *gin.Context){
 func DeleteTipComment (c *gin.Context) {
 	var comment model.TipComment
 	uid, _ := strconv.Atoi(c.Query("user_id"))//执行删除操作者的id
-	commentid := c.Query("comment_id")
+	commentId := c.Query("comment_id")
 
-	res := DB.Where("id = ?", commentid).Take(&comment)
+	res := DB.Where("id = ?", commentId).Take(&comment)
 	if res.Error != nil {
 		fmt.Println(res.Error)
 		return
@@ -105,10 +105,10 @@ func DeleteTipComment (c *gin.Context) {
 
 func TipCommentLike (c *gin.Context){
 	var comment model.TipComment
-	commentid :=c.Query("comment_id")
+	commentId :=c.Query("comment_id")
 	like :=c.Query("like")
 
-	res := DB.Where("id = ?",commentid).Take(&comment)
+	res := DB.Where("id = ?",commentId).Take(&comment)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	if like == "true"{
 		comment.CommentStar+=1

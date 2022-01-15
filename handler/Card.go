@@ -73,14 +73,15 @@ func NewCardComment (c *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
+
 	response.CommentSucceed(c,comment.ID)
 }
 func DeleteCardComment (c *gin.Context){
 	var comment model.CatCardComment
 	uid,_ := strconv.Atoi(c.Query("user_id"))
-	commentid := c.Query("comment_id")
+	commentId := c.Query("comment_id")
 
-	res := DB.Where("id = ?",commentid).Take(&comment)
+	res := DB.Where("id = ?", commentId).Take(&comment)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if comment.UserID !=uint(uid) {
 		response.UserIdWrong(c)

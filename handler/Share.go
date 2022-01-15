@@ -30,9 +30,9 @@ func DeleteShare (c *gin.Context){
 	if err != nil {
 		response.UserIdWrong(c)
 	}
-	shareid := c.Query("share_id")
+	shareId := c.Query("share_id")
 
-	res := DB.Where("id = ?",shareid).Take(&share)
+	res := DB.Where("id = ?",shareId).Take(&share)
 	if res.Error != nil{fmt.Println(res.Error);return}
 	if share.UserID !=uint(uid) {
 		response.UserIdWrong(c)
@@ -58,9 +58,9 @@ func NewShareComment (c *gin.Context){
 func DeleteShareComment (c *gin.Context){
 	var comment model.UserComment
 		uid,_ := strconv.Atoi(c.Query("user_id"))
-		commentid := c.GetHeader("comment_id")
+		commentId := c.GetHeader("comment_id")
 
-		res := DB.Where("id = ?",commentid).Take(&comment)
+		res := DB.Where("id = ?",commentId).Take(&comment)
 		if res.Error != nil{fmt.Println(res.Error);return}
 		if comment.UserID !=uint(uid) {
 			response.UserIdWrong(c)
@@ -79,13 +79,13 @@ func Search (c *gin.Context){
 	res :=DB.Where("content LIKE ?","%"+keywords+"%").Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
-		var shareimg []model.ShareImage
+		var shareImg []model.ShareImage
 		var comment []model.UserComment
 		var shareLike model.ShareLike
 
-		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
+		res =DB.Where("share_id=?",shares[i].ID).Find(&shareImg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		shares[i].ShareImages = shareImg
 
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
@@ -112,11 +112,11 @@ func ViewShare (c *gin.Context){
 	res :=DB.Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
-		var shareimg []model.ShareImage
+		var shareImg []model.ShareImage
 
-		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
+		res =DB.Where("share_id=?",shares[i].ID).Find(&shareImg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		shares[i].ShareImages = shareImg
 
 		var comment []model.UserComment
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
@@ -146,13 +146,13 @@ func SelfShare (c *gin.Context){
 	res :=DB.Where("user_id = ?",uid).Find(&shares).Limit(10).Offset(10)
 	if res.Error!=nil{fmt.Println(res.Error);return}
 	for i:=0;i < len(shares);i++ {
-		var shareimg []model.ShareImage
+		var shareImg []model.ShareImage
 		var comment []model.UserComment
 		var shareLike model.ShareLike
 
-		res =DB.Where("share_id=?",shares[i].ID).Find(&shareimg)
+		res =DB.Where("share_id=?",shares[i].ID).Find(&shareImg)
 		if res.Error!=nil{fmt.Println(res.Error);return}
-		shares[i].ShareImages = shareimg
+		shares[i].ShareImages = shareImg
 
 		res =DB.Where("share_id=?",shares[i].ID).Find(&comment)
 		if res.Error!=nil{fmt.Println(res.Error);return}
