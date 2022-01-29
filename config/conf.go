@@ -16,17 +16,11 @@ var (
 	DBPassword string
 	DBName     string
 
-	JwtKey string
+	JwtKey  string
+	AuthKey string
 )
 
 func init() {
-	/*	fmt.Println("选择配置文件：")
-		var ConfigFileName string
-		n, err := fmt.Scanln(&ConfigFileName)
-		if err != nil || n != 1 {
-			return
-		}
-		file,err := ini.Load("./conf/"+ConfigFileName+".ini")*/
 
 	file, err := ini.Load("./config/conf.ini")
 	if err != nil {
@@ -55,5 +49,6 @@ func LoadData(file *ini.File) {
 
 }
 func LoadKey(file *ini.File) {
-	JwtKey = file.Section("KEY").Key("JwtKey").MustString("helloWorld")
+	JwtKey = file.Section("KEY").Key("jwtKey").MustString("helloWorld")
+	AuthKey = file.Section("KEY").Key("authKey").MustString("12345")
 }
