@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	fmt.Println("SchoolCat")
+	fmt.Println("SchoolCat----RUNNING")
 
 	router.Router()
 

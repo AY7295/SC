@@ -20,8 +20,6 @@ func Router()   {
 	admin := engine.Group("/admin",midware.Admin(),midware.JWT())
 	user :=	engine.Group("/user",midware.JWT())
 
-	//token := engine.Group()
-
 	//百科相关
 	admin.POST("/tip",handler.Tip)//add tip
 	admin.DELETE("/tip",handler.DeleteTip)//delete tip

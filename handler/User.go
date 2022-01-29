@@ -11,9 +11,7 @@ import (
 	"log"
 )
 
-
 var DB = database.DB
-
 
 func EmailExist(email string) bool { //检查名字
 	var user model.User
@@ -41,7 +39,7 @@ func AdminExist(email string) bool {
 }
 
 func Login(c *gin.Context) { //登录
-	var user,user0 model.User
+	var user, user0 model.User
 	err := c.ShouldBind(&user)
 	if err != nil {
 		log.Println(err)
@@ -49,22 +47,31 @@ func Login(c *gin.Context) { //登录
 	}
 
 	res := DB.Where("email = ?", user.Email).Take(&user0)
-	token := midware.GenerateToken(user.Email)
-	//fmt.Println(user.Password, user.Email)
-	if !EmailExist(user.Email) || !PasswordRight(user.Password, user.Email) {
-
-		response.LoginFailed(c)
-		return
-	}else if AdminExist(user.Email){
-
-		response.AdminLogin(c,user0,token)
-		return
-	}
 
 	if res.Error != nil {
 		log.Println(res.Error)
 	}
-		response.UserLogin(c,user0,token)
+	if res.RowsAffected == 0 {
+		response.UserNotExist(c)
+		return
+	}
+
+	//fmt.Println(user.Password, user.Email)
+	if !PasswordRight(user.Password, user.Email) {
+
+		response.PasswordWrong(c)
+		return
+	}
+
+	token := midware.GenerateToken(user.Email)
+
+	if AdminExist(user.Email) {
+
+		response.AdminLogin(c, user0, token)
+		return
+	}
+
+	response.UserLogin(c, user0, token)
 
 	//fmt.Println(EmailExist(user.Email), PasswordRight(user.Password, user.Email))
 }
@@ -73,16 +80,18 @@ func Register(c *gin.Context) { //注册
 	var user model.User
 	err := c.ShouldBind(&user)
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
 	}
-	if user.Password=="" || user.Email=="" {
+
+	if user.Password == "" || user.Email == "" {
 		response.InfoLost(c)
+		return
 	}
-	fmt.Println(user.Email)
+
 	if EmailExist(user.Email) {
 		response.EmailRegistered(c)
 		return
-	} else {
+	}
 
 		hash, err1 := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		if err1 != nil {
@@ -99,8 +108,9 @@ func Register(c *gin.Context) { //注册
 			log.Println(err)
 			return
 		}
-		response.RegisterSucceed(c,user.ID)
-	}
+
+		response.RegisterSucceed(c, user.ID)
+
 }
 
 func Info(c *gin.Context) {
@@ -116,8 +126,8 @@ func Info(c *gin.Context) {
 		log.Println(res.Error)
 		return
 	}
-	user0.Email=user.Email
-	user0.Password=user.Password
+	user0.Email = user.Email
+	user0.Password = user.Password
 	DB.Save(&user0)
-	response.UpdateInfo(c,user0)
+	response.UpdateInfo(c, user0)
 }

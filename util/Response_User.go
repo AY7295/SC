@@ -5,9 +5,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginFailed(c *gin.Context)  {
+func UserNotExist (c *gin.Context)  {
 	c.AsciiJSON(400, gin.H{
-		"msg": "用户名或者密码有误",
+		"msg": "不存在该用户",
+	})
+}
+
+func PasswordWrong (c *gin.Context )  {
+	c.AsciiJSON(400, gin.H{
+		"msg": "密码错误",
 	})
 }
 
@@ -58,3 +64,4 @@ func UpdateInfo(c *gin.Context,user0 model.User)  {
 		"icon":user0.IconSrc,//如果用户没上传头像就为空
 	})
 }
+
