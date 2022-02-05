@@ -1,8 +1,8 @@
-package handler
+package service
 
 import (
 	"SchoolCat/model"
-	response "SchoolCat/util"
+	"SchoolCat/util/responser"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -21,7 +21,7 @@ func NewCard(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	response.CardSucceed(c, card.ID)
+	responser.CardSucceed(c, card.ID)
 }
 
 func DeleteCard(c *gin.Context) {
@@ -38,7 +38,7 @@ func DeleteCard(c *gin.Context) {
 	}
 
 	if AdminExist(user.Email) {
-		response.UserIdWrong(c)
+		responser.UserIdWrong(c)
 	} else {
 		res = DB.Where("id = ?", cardId).Take(&card)
 		if res.Error != nil {
@@ -46,7 +46,7 @@ func DeleteCard(c *gin.Context) {
 			return
 		}
 		DB.Delete(&card)
-		response.DeleteSucceed(c)
+		responser.DeleteSucceed(c)
 	}
 }
 
@@ -75,7 +75,7 @@ func ViewCard(c *gin.Context) {
 		cards[i].CatCardComment = comment
 	}
 	//fmt.Println(cards)
-	response.DisplayCards(c, cards)
+	responser.DisplayCards(c, cards)
 }
 
 func NewCardComment(c *gin.Context) {
@@ -91,7 +91,7 @@ func NewCardComment(c *gin.Context) {
 		log.Println(err)
 	}
 
-	response.CommentSucceed(c, comment.ID)
+	responser.CommentSucceed(c, comment.ID)
 }
 func DeleteCardComment(c *gin.Context) {
 	var comment model.CatCardComment
@@ -104,9 +104,9 @@ func DeleteCardComment(c *gin.Context) {
 		return
 	}
 	if comment.UserID != uint(uid) {
-		response.UserIdWrong(c)
+		responser.UserIdWrong(c)
 	} else {
 		DB.Delete(&comment)
-		response.DeleteSucceed(c)
+		responser.DeleteSucceed(c)
 	}
 }

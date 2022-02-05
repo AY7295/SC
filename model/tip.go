@@ -7,8 +7,8 @@ type Tip struct {
 	CreateId   uint         `json:"create_id"`
 	DeleteID   uint         `json:"delete_id"`
 	Username   string       `json:"username" gorm:"size:80"` //创建者
-	Iocnsrc    string       `json:"icon_src" `
-	ModelCode  int          `json:"model_code"` //根据modelcode来区别tip类型
+	IconSrc    string       `json:"icon_src" `
+	ModelCode  int          `json:"model_code"` //根据modelCode来区别tip类型
 	Title      string       `json:"title"`
 	Content    string       `json:"content" gorm:"type:longtext"`
 	TipComment []TipComment `json:"tip_comment"`
@@ -22,7 +22,7 @@ type TipSrc struct {
 type TipComment struct {
 	gorm.Model
 	Username    string `json:"username" gorm:"size:80"`
-	Iocnsrc     string `json:"icon_src" `
+	IconSrc     string `json:"icon_src" `
 	UserID      uint   `json:"user_id" binding:"required" ` //User.ID
 	TipID       uint   `json:"tip_id"`
 	Like        string `json:"like"`

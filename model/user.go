@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Claim JWT申明字段
 type Claim struct {
 	Email string
 	jwt.StandardClaims

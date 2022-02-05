@@ -4,7 +4,7 @@ import (
 	"SchoolCat/config"
 	"SchoolCat/database"
 	"SchoolCat/model"
-	response "SchoolCat/util"
+	response "SchoolCat/util/responser"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

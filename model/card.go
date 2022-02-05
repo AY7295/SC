@@ -9,8 +9,8 @@ type CatCard struct {
 	CatName        string           `json:"cat_name"`
 	FurColor       string           `json:"fur_color"`
 	Health         string           `json:"health"`
-	Ster           string           `json:"ster"` //绝育情况
-	Area           string           `json:"area"` //出没范围·
+	Sterilization  string           `json:"sterilization"` //绝育情况
+	Area           string           `json:"area"`          //出没范围·
 	Appearance     string           `json:"appearance"`
 	Time           string           `json:"time"`         //第一次目击时间
 	Relationship   string           `json:"relationship"` //猫际关系
@@ -25,7 +25,7 @@ type CatCardSrc struct {
 type CatCardComment struct {
 	gorm.Model
 	Username    string `json:"username" gorm:"size:80"`
-	Iocnsrc     string `json:"icon_src" `
+	IconSrc     string `json:"icon_src" `
 	UserID      uint   `json:"user_id" binding:"required" ` //User.ID
 	CatCardID   uint   `json:"cat_card_id"`
 	CommentStar uint   `json:"comment_star"`

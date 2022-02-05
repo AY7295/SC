@@ -1,4 +1,4 @@
-package util
+package responser
 
 import "github.com/gin-gonic/gin"
 

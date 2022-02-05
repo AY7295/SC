@@ -3,11 +3,11 @@ package model
 import "gorm.io/gorm"
 
 type Share struct { //分享
-	gorm.Model        //这个id用来标记每个图片评论的位置:"shareid",这个creatat用来标记maoreshare的时间
-	UserID     uint   `json:"user_id" ` //User.ID
-	Username   string `json:"username"`
-	IconSrc    string `json:"icon_src"`
-	Address    string `form:"address" json:"address" gorm:"default:'null'"` //存地址
+	gorm.Model
+	UserID   uint   `json:"user_id" ` //User.ID
+	Username string `json:"username"`
+	IconSrc  string `json:"icon_src"`
+	Address  string `form:"address" json:"address" gorm:"default:'null'"` //存地址
 	//Title      string `form:"title" json:"title" binding:"required" gorm:"size:30"`//标题长度不超过30
 	Content     string        `form:"content" json:"content"  gorm:"type:longtext"` //附加内容
 	ShareStar   uint          `json:"share_star"`
@@ -31,7 +31,7 @@ type ShareLike struct {
 type UserComment struct {
 	gorm.Model
 	Username    string `json:"username" gorm:"size:80"`
-	Iocnsrc     string `json:"icon_src" `
+	IconSrc     string `json:"icon_src" `
 	UserID      uint   `json:"user_id" binding:"required" ` //User.ID
 	ShareID     uint   `json:"share_id"`                    //查图片的时候根据where("ShareID=?")来查
 	CommentStar uint   `json:"comment_star"`

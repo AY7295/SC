@@ -1,10 +1,10 @@
-package handler
+package service
 
 import (
 	"SchoolCat/database"
 	"SchoolCat/midware"
 	"SchoolCat/model"
-	response "SchoolCat/util"
+	response "SchoolCat/util/responser"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -93,23 +93,23 @@ func Register(c *gin.Context) { //注册
 		return
 	}
 
-		hash, err1 := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-		if err1 != nil {
-			fmt.Println(err1)
-		}
-		//fmt.Println(hash)
-		encodePW := string(hash)
-		//fmt.Println(encodePW)
-		user.Password = encodePW
+	hash, err1 := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err1 != nil {
+		fmt.Println(err1)
+	}
+	//fmt.Println(hash)
+	encodePW := string(hash)
+	//fmt.Println(encodePW)
+	user.Password = encodePW
 
-		//fmt.Println(user)
-		err = DB.Create(&user).Error
-		if err != nil {
-			log.Println(err)
-			return
-		}
+	//fmt.Println(user)
+	err = DB.Create(&user).Error
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-		response.RegisterSucceed(c, user.ID)
+	response.RegisterSucceed(c, user.ID)
 
 }
 
