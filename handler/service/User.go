@@ -13,6 +13,8 @@ import (
 
 var DB = database.DB
 
+//var RDB =database.RDB
+
 func EmailExist(email string) bool { //检查名字
 	var user model.User
 

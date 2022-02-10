@@ -11,7 +11,7 @@ import (
 
 var DB *gorm.DB
 
-func Link(path string) {
+func MySQL(path string) {
 
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:               path,
@@ -22,15 +22,17 @@ func Link(path string) {
 		},
 	})
 	if err != nil {
-		fmt.Println("数据库链接失败：" + err.Error())
+		log.Println("mysql数据库链接失败：" + err.Error())
+		return
 	} else {
-		fmt.Println("数据库链接成功")
+		fmt.Println("mysql数据库链接成功")
 	}
 
 	//根据model创建一个表
 	err = db.AutoMigrate(&model.User{}, &model.Admin{}, &model.Share{}, &model.ShareImage{}, &model.UserComment{}, &model.CatCard{}, &model.CatCardSrc{}, &model.CatCardComment{}, &model.Tip{}, &model.TipComment{}, &model.TipCommentLike{}, &model.TipSrc{}, &model.ShareLike{}, &model.ShareCommentLike{})
 	if err != nil {
 		log.Panic("建表失败：" + err.Error())
+		return
 	} else {
 		fmt.Println("建表成功")
 	}
