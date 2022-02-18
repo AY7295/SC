@@ -21,11 +21,12 @@ var (
 	RedisHost     string
 	RedisPort     string
 	RedisPassword string
-	RDBName       string
 	RDBCode       int
 
 	JwtKey  string
 	AuthKey string
+
+	ORMLoggerCode int
 )
 
 func init() {
@@ -69,10 +70,12 @@ func LoadFile(file *ini.File) {
 	RedisPort = file.Section("redis").Key("redisPort").MustString("6379")
 	//RedisUser = file.Section("redis").Key("redisUser").MustString("root")
 	RedisPassword = file.Section("redis").Key("redisPWD").MustString("nil")
-	RDBName = file.Section("redis").Key("redisDbName").MustString("test")
-	RDBCode, _ = strconv.Atoi(RDBName)
+	str1 := file.Section("redis").Key("redisDbName").MustString("test")
+	RDBCode, _ = strconv.Atoi(str1)
 
 	JwtKey = file.Section("KEY").Key("jwtKey").MustString("helloWorld")
 	AuthKey = file.Section("KEY").Key("authKey").MustString("12345")
 
+	str2 := file.Section("ORM").Key("code").MustString("4")
+	ORMLoggerCode, _ = strconv.Atoi(str2)
 }

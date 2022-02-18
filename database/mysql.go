@@ -1,12 +1,16 @@
 package database
 
 import (
+	"SchoolCat/config"
 	"SchoolCat/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
+	"os"
+	"time"
 )
 
 var DB *gorm.DB
@@ -20,6 +24,7 @@ func MySQL(path string) {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
+		Logger: MysqlLogger,
 	})
 	if err != nil {
 		log.Println("mysql数据库链接失败：" + err.Error())
@@ -39,3 +44,13 @@ func MySQL(path string) {
 
 	DB = db
 }
+
+var MysqlLogger logger.Interface = logger.New(
+	log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
+	logger.Config{
+		SlowThreshold:             time.Nanosecond,                       // 快 SQL 阈值
+		LogLevel:                  logger.LogLevel(config.ORMLoggerCode), // 日志级别
+		IgnoreRecordNotFoundError: false,                                 // ErrRecordNotFound（记录未找到）错误
+		Colorful:                  true,                                  // 用彩色打印
+	},
+)
