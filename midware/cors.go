@@ -5,9 +5,7 @@ import (
 	"net/http"
 )
 
-
-func CORS() gin.HandlerFunc {//跨域用的暂时没写好
-	//
+func CORS() gin.HandlerFunc {
 	//return func(c *gin.Context) {
 	//	c.Header("Access-Control-Allow-Origin", "*")
 	//	c.Header("Access-Control-Allow-Credentials", "true")
@@ -19,12 +17,12 @@ func CORS() gin.HandlerFunc {//跨域用的暂时没写好
 	//	}
 	//}
 
-	return func(c *gin.Context){
+	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		//c.Header("Access-Control-Allow-Methods", "GET, PUT, PATCH, DELETE, OPTIONS, POST")
 		//c.Header("Access-Control-Allow-Headers", "Authorization,Content-Type,id,comment_id,user_id,auth,card_id")
 		c.Header("Access-Control-Allow-Methods", "*")
-		c.Header("Access-Control-Allow-Headers","*")
+		c.Header("Access-Control-Allow-Headers", "*")
 		if method := c.Request.Method; method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 		}

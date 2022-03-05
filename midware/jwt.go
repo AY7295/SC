@@ -12,24 +12,28 @@ import (
 	"time"
 )
 
-var jwtKey = []byte(config.JwtKey)
+var (
+	jwtKey       = []byte(config.C.Token.JwtKey)
+	expireMinute = config.C.Token.ExpireMinute
+)
 
-func GenerateToken(email string) (secretToken string) {
+func GenerateToken(email string) string {
 
 	var claims = model.Claim{
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: time.Now().Unix(),                     //立即生效
-			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(), //一天失效
-			Issuer:    "sever",                               //签发者
+			NotBefore: time.Now().Unix(),                               //立即生效
+			ExpiresAt: time.Now().Add(expireMinute * time.Hour).Unix(), //失效时间
+			Issuer:    "test-sever",                                    //签发者
 		},
 	}
 
 	res := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
 	Token, err := res.SignedString(jwtKey)
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Println("err:", err)
+		return ":"
 	}
 
 	//fmt.Println(Token)
@@ -58,6 +62,7 @@ func JWT() gin.HandlerFunc {
 			return
 		}
 		parts := strings.SplitN(authHeader, " ", 2)
+		//parts := strings.Fields(authHeader)
 		fmt.Println(parts)
 		if parts[0] != "MaoMao" || len(parts) != 2 {
 			response.WrongToken(c)

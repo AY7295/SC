@@ -1,0 +1,43 @@
+
+util:
+  AppMode : debug
+#  AppMode : release
+  HttpPort : :7000
+
+
+mysql:
+  mysqlHost : localhost
+  mysqlPort : 3306
+  mysqlUser : root
+  mysqlPWD : 12345qwert
+  mysqlDbName : schoolcat
+
+
+redis:
+  redisHost : localhost
+  redisPort : 6379
+  redisPWD : 12345qwert
+  redisDbName : 0
+
+
+token:
+  expireMinute : 60
+  jwtKey : jwtKeyHello
+
+
+others:
+  authKey : 12345
+
+
+
+
+
+#   ORMCode : 4
+#
+# #ORMCode
+# #  Silent = 1
+# #  Error = 2
+# #  Warn = 3
+# #  Info = 4
+
+

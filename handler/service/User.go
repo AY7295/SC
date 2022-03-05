@@ -22,22 +22,16 @@ func EmailExist(email string) bool { //检查名字
 	return res.RowsAffected != 0
 }
 
-func PasswordRight(pwd string, email string) bool { //检查密码
-	var user model.User
-
-	res := DB.Where("email = ?", email).Take(&user)
-	if res.Error != nil {
-		log.Println(res.Error)
-	}
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pwd))
-	return err == nil
-}
-
 func AdminExist(email string) bool {
 	var admin model.Admin
 
 	res := DB.Where("email = ?", email).Take(&admin)
 	return res.RowsAffected != 0
+}
+
+func PasswordRight(pwd string, pwd0 string) bool { //检查密码
+	err := bcrypt.CompareHashAndPassword([]byte(pwd0), []byte(pwd))
+	return err == nil
 }
 
 func Login(c *gin.Context) { //登录
@@ -59,13 +53,18 @@ func Login(c *gin.Context) { //登录
 	}
 
 	//fmt.Println(user.Password, user.Email)
-	if !PasswordRight(user.Password, user.Email) {
+	if !PasswordRight(user.Password, user0.Password) {
 
 		response.PasswordWrong(c)
 		return
 	}
 
-	token := midware.GenerateToken(user.Email)
+	token := midware.GenerateToken(user0.Email)
+	fmt.Println(token)
+	if token == "" {
+		fmt.Println("token生成失败")
+		return
+	}
 
 	if AdminExist(user.Email) {
 

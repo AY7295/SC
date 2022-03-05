@@ -8,8 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	appMode  = config.C.Util.AppMode
+	httpPort = config.C.Util.HttpPort
+)
+
 func Router() {
-	gin.SetMode(config.AppMode)
+	gin.SetMode(appMode)
 
 	engine := gin.Default()
 	engine.Use(midware.CORS())
@@ -54,7 +59,14 @@ func Router() {
 	user.PUT("/shareCommentLike", service.ShareCommentLike) //用户点赞
 	user.PUT("/shareLike", service.ShareLike)               //用户点赞
 
-	err := engine.Run(config.HttpPort)
+	//for test
+	engine.GET("/", func(c *gin.Context) {
+		c.AsciiJSON(200, gin.H{
+			"msg": "hello",
+		})
+	})
+	//fmt.Println("ha:", config.C.Util)
+	err := engine.Run(httpPort)
 	if err != nil {
 		fmt.Println("路由运行端口出错", err)
 	}
